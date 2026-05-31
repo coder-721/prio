@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Prio turns your assignments and deadlines into a clear AI-generated daily plan. Built for high school and college students. Free on iOS and Android.">
+  <title>Prio — AI Student Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Floating Blurred Gradient Background Orbs -->
+  <div class="orb-container">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <nav id="navbar">
+    <div class="nav-container">
+
+      <!-- Logo Image Swap -->
+      <a href="index.html" class="nav-logo">
+        <img src="assets/logo.png" alt="Prio Logo">
+        <span>Prio</span>
+      </a>
+
+      <!-- Desktop Links -->
+      <ul class="nav-links">
+        <li><a href="features.html">Features</a></li>
+        <li><a href="download.html">Download</a></li>
+      </ul>
+
+      <!-- CTA -->
+      <a href="download.html" class="btn btn-primary nav-cta">Download the App</a>
+
+      <!-- Mobile Hamburger -->
+      <button id="menu-btn" aria-label="Open menu" aria-expanded="false">
+        <i data-lucide="menu"></i>
+      </button>
+
+    </div>
+
+    <!-- Mobile Dropdown -->
+    <div id="mobile-menu">
+      <a href="features.html">Features</a>
+      <a href="download.html">Download</a>
+      <a href="download.html" class="btn btn-primary">Download the App</a>
+    </div>
+  </nav>
+
+  <!-- Section 1: Hero -->
+  <header class="section" style="padding-top: var(--space-lg);">
+    <div class="hero">
+      
+      <!-- Left Column: Content -->
+      <div class="hero-text">
+        <span class="eyebrow">✦  AI-Powered Student Planner</span>
+        <h1 style="margin-bottom: 20px;">
+          Stop cramming.<br>
+          Start planning<br>
+          with <span class="text-primary">Prio.</span>
+        </h1>
+        <p style="font-size: 18px; margin-bottom: 24px; max-width: 520px;">
+          Prio turns your assignments, deadlines, and busy schedule into a
+          clear AI-generated daily plan — so you always know exactly what
+          to work on, and when. Built by students, for students.
+        </p>
+        <div class="hero-buttons">
+          <!-- TODO: replace href with real App Store / Google Play URLs -->
+          <a href="download.html" class="btn btn-primary">
+            <i data-lucide="smartphone"></i>
+            <span>Download on iOS</span>
+          </a>
+          <a href="download.html" class="btn btn-outline">
+            <i data-lucide="smartphone"></i>
+            <span>Get on Android</span>
+          </a>
+        </div>
+        <p class="hero-caption">
+          Free to download &nbsp;·&nbsp; No credit card required &nbsp;·&nbsp; iOS & Android
+        </p>
+      </div>
+
+      <!-- Right Column: Real Screenshot iPhone Mockup -->
+      <div class="hero-mockup-wrap">
+        <div class="phone-glow"></div>
+        <div class="hero-mockup phone-frame" style="max-width: 280px;">
+          <!-- Sleek hardware notch -->
+          <div class="phone-notch"></div>
+          <!-- Integrated real dashboard asset -->
+          <img src="assets/screenshot_home.png" alt="Prio Home Dashboard Preview" class="phone-screenshot">
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Section 2: Problem Strip -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="problem-grid">
+        
+        <!-- Column 1 -->
+        <div class="problem-item reveal reveal-delay-1">
+          <div class="problem-icon">
+            <i data-lucide="calendar-x-2"></i>
+          </div>
+          <h4>Calendars just show deadlines</h4>
+          <p>They tell you when things are due — not when to work on them. That gap is where procrastination lives.</p>
+        </div>
+
+        <!-- Column 2 -->
+        <div class="problem-item reveal reveal-delay-2">
+          <div class="problem-icon">
+            <i data-lucide="brain-circuit"></i>
+          </div>
+          <h4>Cramming isn't a you problem</h4>
+          <p>Students don't procrastinate because they're lazy. They do it because no tool actually helps them plan their work.</p>
+        </div>
+
+        <!-- Column 3 -->
+        <div class="problem-item reveal reveal-delay-3">
+          <div class="problem-icon">
+            <i data-lucide="sparkles"></i>
+          </div>
+          <h4>Prio fills that gap</h4>
+          <p>Type one sentence. Prio reads it, estimates your workload, assigns priority, and builds your entire day automatically.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Feature Cards -->
+  <section class="section">
+    <div class="container">
+      
+      <div class="section-header reveal">
+        <h2>Everything you need. Nothing you don't.</h2>
+        <p>Prio is built by students who were tired of juggling six classes, practice, and a social life with tools that weren't built for them.</p>
+      </div>
+
+      <div class="feature-cards-grid">
+        
+        <!-- Card 1 -->
+        <div class="card feature-card reveal reveal-delay-1">
+          <div class="feature-card-icon">
+            <i data-lucide="message-square-plus"></i>
+          </div>
+          <h3>Just type it.</h3>
+          <p>'English essay due Friday, probably 2 hours' — that's all it takes. Prio reads plain English and builds the plan from there. No forms, no dropdowns.</p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card feature-card reveal reveal-delay-2">
+          <div class="feature-card-icon">
+            <i data-lucide="layout-list"></i>
+          </div>
+          <h3>Your day, planned for you.</h3>
+          <p>Each morning, Prio builds a prioritized checklist of exactly what to work on — balanced around your free time and sorted by urgency automatically.</p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card feature-card reveal reveal-delay-3">
+          <div class="feature-card-icon">
+            <i data-lucide="timer"></i>
+          </div>
+          <h3>A timer that actually helps.</h3>
+          <p>Start a session and Prio counts down through your tasks. Finish one, it moves to the next. Running out of time? Low-priority tasks shift to tomorrow on their own.</p>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card feature-card reveal reveal-delay-4">
+          <div class="feature-card-icon">
+            <i data-lucide="layers"></i>
+          </div>
+          <h3>Big projects, small steps.</h3>
+          <p>Research papers and long-term assignments get broken into AI-generated subtasks with their own deadlines. A progress bar shows exactly how far you've come.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Section 4: Student Quotes -->
+  <section class="section section-alt">
+    <div class="container">
+      
+      <div class="section-header reveal" style="margin-bottom: var(--space-lg);">
+        <h2>Students who stopped winging it</h2>
+      </div>
+
+      <div class="quotes-grid">
+        
+        <!-- Quote 1 -->
+        <div class="card reveal reveal-delay-1">
+          <div class="quote-mark">“</div>
+          <p class="quote-text">"I used to do all my homework the night before. Prio showed me I had time all along — I just didn't know how to use it."</p>
+          <div class="quote-divider"></div>
+          <span class="quote-name">Alex K.</span>
+          <p class="quote-desc">High School Junior</p>
+        </div>
+
+        <!-- Quote 2 -->
+        <div class="card reveal reveal-delay-2">
+          <div class="quote-mark">“</div>
+          <p class="quote-text">"The natural language input is insane. I type my assignments between classes in 10 seconds and my whole day is planned."</p>
+          <div class="quote-divider"></div>
+          <span class="quote-name">Maya R.</span>
+          <p class="quote-desc">College Freshman</p>
+        </div>
+
+        <!-- Quote 3 -->
+        <div class="card reveal reveal-delay-3">
+          <div class="quote-mark">“</div>
+          <p class="quote-text">"Every other planner app felt like homework itself. Prio is the first one that actually reduces my stress."</p>
+          <div class="quote-divider"></div>
+          <span class="quote-name">Jordan T.</span>
+          <p class="quote-desc">College Sophomore</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Section 5: Final CTA Banner -->
+  <section class="cta-banner">
+    <div class="cta-banner-inner reveal">
+      <h2>Ready to stop winging it?</h2>
+      <p>Join students who finally have a plan. Free to download on iOS and Android.</p>
+      <div class="btn-group">
+        <a href="download.html" class="btn btn-white">
+          <i data-lucide="smartphone"></i>
+          <span>Download on iOS</span>
+        </a>
+        <a href="download.html" class="btn btn-white">
+          <i data-lucide="smartphone"></i>
+          <span>Get on Android</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-grid">
+
+      <div class="footer-brand">
+        <!-- Logo Image Swap -->
+        <a href="index.html" class="nav-logo" style="margin-bottom:12px; display:inline-flex;">
+          <img src="assets/logo.png" alt="Prio Logo">
+          <span>Prio</span>
+        </a>
+        <p style="font-size:14px; color: var(--text-faint);">
+          Turning schoolwork into daily priorities.
+        </p>
+      </div>
+
+      <div class="footer-links">
+        <h4 style="font-size:14px; margin-bottom:12px;">Pages</h4>
+        <ul style="display:flex; flex-direction:column; gap:8px;">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="features.html">Features</a></li>
+          <li><a href="download.html">Download</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h4 style="font-size:14px; margin-bottom:12px;">Legal</h4>
+        <ul style="display:flex; flex-direction:column; gap:8px;">
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Use</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h4 style="font-size:14px; margin-bottom:12px;">Contact</h4>
+        <a href="mailto:hello@getprio.app" style="color: var(--primary); font-size:14px;">
+          hello@getprio.app
+        </a>
+      </div>
+
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Prio. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Particle Canvas -->
+  <canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+  <!-- Script triggers -->
+  <script src="script.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

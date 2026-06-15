@@ -12,6 +12,12 @@
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   window.scrollTo(0, 0);
 
+  // ── Skip the heavy WebGL scene on mobile ───────────────────
+  // The 3D canvas is hidden on phones (CSS) and a static logo stands in for it,
+  // so booting Three.js there only burned battery and caused jank. The home
+  // hero keeps its floating logo; Features/Download simply have no model.
+  if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) return;
+
   // ── Wait for libs ──────────────────────────────────────────
   if (typeof THREE === 'undefined' || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
     console.warn('Three.js or GSAP not loaded yet');

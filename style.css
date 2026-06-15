@@ -55,6 +55,99 @@
   --cursor-y: 50%;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   LIGHT THEME — opt-in via [data-theme="light"] on <html>.
+   Dark remains the default (no attribute / data-theme="dark"), so the
+   dark design is left completely untouched. Light mode re-maps the
+   shared variables and patches the few hard-coded dark surfaces so
+   every element stays visible and functional.
+   ═══════════════════════════════════════════════════════════════ */
+[data-theme="light"] {
+  --primary-light:   #60a5fa;
+  --primary:         #2563eb;
+  --primary-dark:    #1d4ed8;
+  --primary-faint:   rgba(37, 99, 235, 0.10);
+
+  --secondary:       #4387b2;
+  --secondary-dark:  #1e3a5f;
+
+  --bg-dark:         #f5f8fc;
+  --bg-alt:          #eaf0f8;
+  --bg-elev:         #ffffff;
+  --bg-card:         rgba(255, 255, 255, 0.72);
+  --border:          rgba(15, 23, 42, 0.10);
+  --border-focus:    rgba(15, 23, 42, 0.18);
+
+  --text-main:       #0f172a;
+  --text-muted:      #44546a;
+  --text-faint:      #7a899e;
+
+  --shadow-sm:   0 2px 10px rgba(15, 23, 42, 0.08);
+  --shadow-md:   0 12px 34px rgba(15, 23, 42, 0.12);
+  --shadow-lg:   0 24px 60px rgba(15, 23, 42, 0.16), 0 0 60px rgba(59, 130, 246, 0.08);
+}
+
+/* Navigation bar */
+[data-theme="light"] #navbar {
+  background: rgba(245, 248, 252, 0.7);
+  border-bottom-color: rgba(15, 23, 42, 0.06);
+}
+[data-theme="light"] #navbar.scrolled {
+  background: rgba(245, 248, 252, 0.9);
+  box-shadow: 0 4px 30px rgba(15, 23, 42, 0.12);
+}
+[data-theme="light"] #mobile-menu { background: var(--bg-elev); }
+
+/* Footer */
+[data-theme="light"] footer { background: rgba(234, 240, 248, 0.96); }
+
+/* Frosted glass surfaces that were built on near-black rgba() */
+[data-theme="light"] .feature-section-grid { background: rgba(255, 255, 255, 0.72); }
+[data-theme="light"] .feature-card { background: rgba(255, 255, 255, 0.72); }
+[data-theme="light"] .feature-card:hover { background: rgba(255, 255, 255, 0.92); }
+[data-theme="light"] .card:hover { background: rgba(255, 255, 255, 0.92); }
+[data-theme="light"] .btn-outline { background: rgba(15, 23, 42, 0.04); }
+[data-theme="light"] .btn-outline:hover { background: rgba(15, 23, 42, 0.08); }
+
+/* Calendar / FAQ / input surfaces that used white-on-dark overlays */
+[data-theme="light"] .cal-cell { background: rgba(15, 23, 42, 0.035); }
+[data-theme="light"] .faq-item { background: rgba(255, 255, 255, 0.7); }
+[data-theme="light"] .faq-item:hover { background: rgba(255, 255, 255, 0.92); }
+
+/* Giant hero brand word + guide ring */
+[data-theme="light"] .hero-word { color: #e3eaf4; }
+[data-theme="light"] .hero-ring { border-color: rgba(15, 23, 42, 0.08); }
+[data-theme="light"] .hero-ring::before { border-color: rgba(37, 99, 235, 0.12); }
+
+/* The phone mockups stay dark (they show the app's dark UI) — keep their
+   inner text and chips light so they remain readable in light mode. */
+[data-theme="light"] .demo-screen-title,
+[data-theme="light"] .demo-input,
+[data-theme="light"] .plan-text,
+[data-theme="light"] .busy-label,
+[data-theme="light"] .busy-counter-sub,
+[data-theme="light"] .busy-counter-sub .busy-num,
+[data-theme="light"] .proc-notif-title,
+[data-theme="light"] .proc-notif-sub { color: #f3f6fb; }
+[data-theme="light"] .demo-input { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.12); }
+[data-theme="light"] .plan-row { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.12); }
+
+/* ── Theme toggle button (top-right; sits next to the menu button on mobile) ── */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-main);
+  padding: 6px;
+  border-radius: var(--radius-pill);
+  transition: color 0.2s, background 0.2s;
+}
+.theme-toggle:hover { color: var(--primary); background: var(--bg-card); }
+.theme-toggle i, .theme-toggle svg { width: 22px; height: 22px; }
+
 /* ── Base Reset ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -352,6 +445,9 @@ p  { color: var(--text-muted); }
 @media (max-width: 768px) {
   .nav-links, .nav-cta { display: none; }
   #menu-btn { display: block; }
+  /* Tighten the bar so the logo + theme toggle + menu button all fit on
+     narrow phones. */
+  .nav-container { padding: 0 var(--space-sm); gap: 6px; }
 }
 
 /* ── Footer ── */
@@ -434,9 +530,20 @@ footer {
 
 .hero-caption { font-size: 14px; color: var(--text-faint); font-weight: 500; }
 @media (max-width: 768px) {
-  .hero { grid-template-columns: 1fr; padding-top: var(--space-lg); text-align: center; }
+  /* Collapse the reserved 3D space and tighten the hero so there isn't a
+     screen-tall gap around the top of the Features page on mobile. */
+  .hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding: var(--space-sm) var(--space-md) 0;
+    text-align: center;
+    gap: var(--space-md);
+  }
   .hero-buttons { justify-content: center; }
   .hero-3d-spacer { display: none; }
+  /* Features-page hero is wrapped in a <header class="section"> — trim its
+     oversized vertical padding on mobile too. */
+  header.section { padding-top: var(--space-md); padding-bottom: 0; }
 }
 
 /* ── Problem Strip ── */
@@ -1765,4 +1872,13 @@ footer {
 
 @media (prefers-reduced-motion: reduce) {
   .hero-ring, .hud-scroll i, .nl-track, .proc-orbit, .proc-feed { animation: none !important; }
+}
+
+/* ── Mobile performance: drop the most expensive blur/animation layers ──
+   On phones the animated aurora + heavy blurred orbs + WebGL canvas were the
+   main cause of jank. The WebGL scene and particle field are disabled in JS;
+   here we calm the remaining GPU-heavy background layers. */
+@media (max-width: 768px) {
+  .aurora { display: none; }
+  .orb { animation: none; filter: blur(90px); opacity: 0.12; }
 }

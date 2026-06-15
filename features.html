@@ -3,6 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Apply the saved theme before paint to avoid a flash (default: dark) -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('prio-theme');
+        document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
   <meta name="description" content="Discover how Prio's AI-generated daily schedule, natural language parsing, smart timers, projects board, and calendar view keep you organized.">
   <title>Features — Prio AI Student Planner</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,6 +58,11 @@
       <!-- CTA -->
       <a href="download.html" class="btn btn-primary nav-cta">Download the App</a>
 
+      <!-- Light / Dark Theme Toggle -->
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light and dark mode">
+        <i data-lucide="moon"></i>
+      </button>
+
       <!-- Mobile Hamburger -->
       <button id="menu-btn" aria-label="Open menu" aria-expanded="false">
         <i data-lucide="menu"></i>
@@ -66,7 +82,6 @@
   <header class="section" style="padding-top: var(--space-lg);">
     <div class="hero">
       <div class="hero-text">
-        <span class="eyebrow">✦  Built for busy students</span>
         <h1 style="margin-bottom: 20px;">
           Every feature<br>
           has one goal:<br>

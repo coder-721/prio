@@ -41,6 +41,39 @@ if (menuBtn && mobileMenu) {
   });
 }
 
+// ── Light / Dark Theme Toggle ──────────────────────────────────
+// The initial theme is set by a tiny inline script in each page's <head>
+// (so there's no flash). Default is dark; choice persists in localStorage.
+(function themeToggle() {
+  const root = document.documentElement;
+  const btn  = document.getElementById('theme-toggle');
+
+  const current = () => (root.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
+
+  // Re-render the icon fresh each time (lucide replaces <i> with <svg>, so we
+  // rebuild the inner markup rather than mutating a node that no longer exists).
+  function syncIcon() {
+    if (!btn) return;
+    btn.innerHTML = '<i data-lucide="' + (current() === 'light' ? 'sun' : 'moon') + '"></i>';
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  syncIcon();
+
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const next = current() === 'light' ? 'dark' : 'light';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('prio-theme', next); } catch (e) {}
+      syncIcon();
+      // Layout-affecting variables changed; keep any pinned scroll scenes aligned.
+      if (window.ScrollTrigger && typeof window.ScrollTrigger.refresh === 'function') {
+        window.ScrollTrigger.refresh();
+      }
+    });
+  }
+})();
+
 // ── Sticky Nav Shadow ──────────────────────────────────────────
 const nav = document.getElementById('navbar');
 if (nav) {
@@ -108,6 +141,14 @@ if (notifyBtn) {
 (function initParticles() {
   const canvas = document.getElementById('particle-canvas');
   if (!canvas) return;
+
+  // Skip the particle field on mobile — it's a per-frame redraw of a full-screen
+  // grid and was part of why phones felt slow. Desktop is unchanged.
+  if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) {
+    canvas.style.display = 'none';
+    return;
+  }
+
   const ctx = canvas.getContext('2d');
 
   // ── Config ──────────────────────────────────────────

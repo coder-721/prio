@@ -8,6 +8,9 @@
   const canvas = document.getElementById('three-canvas');
   if (!canvas) return;
 
+  // Remove the 3D model entirely on mobile — fixes the slowness on phones.
+  if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) return;
+
   if (typeof THREE === 'undefined' || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
     console.warn('Three.js or GSAP not loaded');
     return;

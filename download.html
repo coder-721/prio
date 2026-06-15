@@ -3,6 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Apply the saved theme before paint to avoid a flash (default: dark) -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('prio-theme');
+        document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
   <meta name="description" content="Download Prio for free on iOS and Android. Simple pricing, no surprises. Get answers to frequently asked questions.">
   <title>Download Prio — AI Student Planner</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,6 +57,11 @@
 
       <!-- CTA -->
       <a href="download.html" class="btn btn-primary nav-cta">Download the App</a>
+
+      <!-- Light / Dark Theme Toggle -->
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light and dark mode">
+        <i data-lucide="moon"></i>
+      </button>
 
       <!-- Mobile Hamburger -->
       <button id="menu-btn" aria-label="Open menu" aria-expanded="false">

@@ -41,6 +41,22 @@ if (menuBtn && mobileMenu) {
   });
 }
 
+// ── Lock zoom on mobile ────────────────────────────────────────
+// Accidental pinch / zoom-out left the responsive layout in a broken state.
+// The viewport meta locks scale; this also blocks the gesture & ctrl-wheel
+// paths that some browsers (notably iOS Safari) honor regardless of the meta.
+(function lockZoom() {
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach((evt) => {
+    document.addEventListener(evt, (e) => e.preventDefault(), { passive: false });
+  });
+  document.addEventListener('wheel', (e) => {
+    if (e.ctrlKey) e.preventDefault();
+  }, { passive: false });
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '0'].includes(e.key)) e.preventDefault();
+  });
+})();
+
 // ── Light / Dark Theme Toggle ──────────────────────────────────
 // The initial theme is set by a tiny inline script in each page's <head>
 // (so there's no flash). Default is dark; choice persists in localStorage.

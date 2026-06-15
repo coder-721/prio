@@ -10,6 +10,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="style.css">
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <!-- Encoded 3D Model -->
+  <script src="assets/model_data.js"></script>
 </head>
 <body>
 
@@ -32,8 +40,8 @@
 
       <!-- Desktop Links -->
       <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
         <li><a href="features.html" style="color: var(--primary); font-weight: 700;">Features</a></li>
-        <li><a href="download.html">Download</a></li>
       </ul>
 
       <!-- CTA -->
@@ -48,17 +56,29 @@
 
     <!-- Mobile Dropdown -->
     <div id="mobile-menu">
+      <a href="index.html">Home</a>
       <a href="features.html" style="color: var(--primary); font-weight: 700;">Features</a>
-      <a href="download.html">Download</a>
       <a href="download.html" class="btn btn-primary">Download the App</a>
     </div>
   </nav>
 
-  <!-- Features Hero Section -->
-  <header class="features-hero reveal">
-    <span class="eyebrow">✦  Built for busy students</span>
-    <h1>Every feature has one goal: less stress.</h1>
-    <p>Prio isn't trying to do everything. It does exactly what students need — and nothing more.</p>
+  <!-- Features Hero Section — two-column, mirrored from home (text left, model right) -->
+  <header class="section" style="padding-top: var(--space-lg);">
+    <div class="hero">
+      <div class="hero-text">
+        <span class="eyebrow">✦  Built for busy students</span>
+        <h1 style="margin-bottom: 20px;">
+          Every feature<br>
+          has one goal:<br>
+          <span class="text-primary">less stress.</span>
+        </h1>
+        <p style="font-size: 18px; max-width: 480px;">
+          Prio isn't trying to do everything. It does exactly what students need — and nothing more.
+        </p>
+      </div>
+      <!-- Right column: empty space for 3D model (rendered on Three.js canvas) -->
+      <div class="hero-3d-spacer"></div>
+    </div>
   </header>
 
   <!-- Feature 1: Natural Language Input -->
@@ -289,7 +309,7 @@
         <div class="phone-glow"></div>
         <div class="phone-frame">
           <div class="phone-notch"></div>
-          <img src="assets/screenshot_projects.png" alt="Prio Projects Screen Preview" class="phone-screenshot">
+          <img src="assets/Projects.png" alt="Prio Projects Screen Preview" class="phone-screenshot phone-screenshot--top">
         </div>
       </div>
 
@@ -362,8 +382,12 @@
   <!-- Particle Canvas -->
   <canvas id="particle-canvas" aria-hidden="true"></canvas>
 
+  <!-- Three.js 3D Canvas -->
+  <canvas id="three-canvas" aria-hidden="true"></canvas>
+
   <!-- Script triggers -->
   <script src="script.js"></script>
   <script>lucide.createIcons();</script>
+  <script src="scene_features.js"></script>
 </body>
 </html>

@@ -118,8 +118,8 @@ if (notifyBtn) {
   const SPRING_K       = 0.048;     // spring stiffness (0..1, lower = slower return)
   const DAMPING        = 0.72;      // velocity damping (0..1, lower = more drag)
 
-  // Prio dark-blue palette — subtle, premium
-  const PARTICLE_COLOR = 'rgba(41, 100, 180, 0.35)';
+  // Prio blue palette — subtle dots on light background
+  const PARTICLE_COLOR = 'rgba(37, 99, 235, 0.18)';
 
   // ── State ───────────────────────────────────────────
   let particles   = [];
@@ -228,4 +228,40 @@ if (notifyBtn) {
   // ── Init ──────────────────────────────────────────────
   resize();
   rafId = requestAnimationFrame(tick);
+})();
+
+// ── Interactive Card Tilt ──────────────────────────────────────
+// Any card tilts AWAY from the cursor (as if the mouse is pushing it),
+// giving a subtle, dynamic 3D feel. Disabled for reduced-motion + touch.
+(function cardTilt() {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const coarse = window.matchMedia('(pointer: coarse)').matches;
+  if (reduce || coarse) return;
+
+  const MAX = 7; // max tilt in degrees
+  const cards = document.querySelectorAll('.feature-card, .card, .plan-feature-item, .badge-btn');
+
+  cards.forEach((card) => {
+    card.style.transformStyle = 'preserve-3d';
+
+    card.addEventListener('mouseenter', () => {
+      card.style.transition = 'transform 0.08s ease-out';
+    });
+
+    card.addEventListener('mousemove', (e) => {
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;   // -0.5 .. 0.5
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      const ry = px * 2 * MAX;     // cursor on the right → right edge pushes back
+      const rx = -py * 2 * MAX;    // cursor near the bottom → bottom pushes back
+      card.style.transform =
+        'perspective(800px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) +
+        'deg) translateY(-4px)';
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
+      card.style.transform = '';
+    });
+  });
 })();

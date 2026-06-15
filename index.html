@@ -10,8 +10,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="style.css">
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Three.js (non-module for local file support) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  
+  <!-- Encoded 3D Model -->
+  <script src="assets/model_data.js"></script>
 </head>
 <body>
+
+  <!-- Animated Aurora Gradient Layer -->
+  <div class="aurora" aria-hidden="true"></div>
 
   <!-- Floating Blurred Gradient Background Orbs -->
   <div class="orb-container">
@@ -32,8 +45,8 @@
 
       <!-- Desktop Links -->
       <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
         <li><a href="features.html">Features</a></li>
-        <li><a href="download.html">Download</a></li>
       </ul>
 
       <!-- CTA -->
@@ -48,191 +61,368 @@
 
     <!-- Mobile Dropdown -->
     <div id="mobile-menu">
+      <a href="index.html">Home</a>
       <a href="features.html">Features</a>
-      <a href="download.html">Download</a>
       <a href="download.html" class="btn btn-primary">Download the App</a>
     </div>
   </nav>
 
-  <!-- Section 1: Hero -->
-  <header class="section" style="padding-top: var(--space-lg);">
-    <div class="hero">
-      
-      <!-- Left Column: Content -->
-      <div class="hero-text">
-        <span class="eyebrow">✦  AI-Powered Student Planner</span>
-        <h1 style="margin-bottom: 20px;">
-          Stop cramming.<br>
-          Start planning<br>
-          with <span class="text-primary">Prio.</span>
-        </h1>
-        <p style="font-size: 18px; margin-bottom: 24px; max-width: 520px;">
-          Prio turns your assignments, deadlines, and busy schedule into a
-          clear AI-generated daily plan — so you always know exactly what
-          to work on, and when. Built by students, for students.
-        </p>
-        <div class="hero-buttons">
-          <!-- TODO: replace href with real App Store / Google Play URLs -->
-          <a href="download.html" class="btn btn-primary">
-            <i data-lucide="smartphone"></i>
-            <span>Download on iOS</span>
-          </a>
-          <a href="download.html" class="btn btn-outline">
-            <i data-lucide="smartphone"></i>
-            <span>Get on Android</span>
-          </a>
-        </div>
-        <p class="hero-caption">
-          Free to download &nbsp;·&nbsp; No credit card required &nbsp;·&nbsp; iOS & Android
-        </p>
+  <!-- Section 1: Immersive Hero -->
+  <header id="hero" class="hero-immersive" data-section="0">
+
+    <!-- Giant brand word sitting BEHIND the 3D logo -->
+    <div class="hero-word" aria-hidden="true">PRIO</div>
+
+    <!-- Slowly rotating guide ring behind the logo -->
+    <div class="hero-ring" aria-hidden="true"></div>
+
+    <!-- Static logo fallback (the 3D canvas is hidden on small screens) -->
+    <img class="hero-logo-fallback" src="assets/logo.png" alt="Prio logo">
+
+    <!-- HUD foreground -->
+    <div class="hero-hud">
+
+      <!-- top-right micro label -->
+      <div class="hud-tag">AI&nbsp;·&nbsp;Student&nbsp;Planner</div>
+
+      <!-- right: section counter -->
+      <div class="hud-counter"><span class="hud-cur">01</span><span class="hud-counter-line"></span><span class="hud-total">04</span></div>
+
+      <!-- bottom-left: headline + meta -->
+      <div class="hud-headline">
+        <h1>Stop cramming.<br>Start planning with&nbsp;<span class="text-primary">Prio.</span></h1>
+        <p class="hero-caption">Free to download&nbsp;·&nbsp;No credit card&nbsp;·&nbsp;iOS &amp; Android</p>
       </div>
 
-      <!-- Right Column: Real Screenshot iPhone Mockup -->
-      <div class="hero-mockup-wrap">
-        <div class="phone-glow"></div>
-        <div class="hero-mockup phone-frame" style="max-width: 280px;">
-          <!-- Sleek hardware notch -->
-          <div class="phone-notch"></div>
-          <!-- Integrated real dashboard asset -->
-          <img src="assets/screenshot_home.png" alt="Prio Home Dashboard Preview" class="phone-screenshot">
-        </div>
+      <!-- bottom-right: CTA -->
+      <div class="hud-cta">
+        <a href="download.html" class="btn btn-primary">
+          <i data-lucide="smartphone"></i><span>Download the App</span>
+        </a>
       </div>
+
+      <!-- bottom-center: scroll indicator -->
+      <div class="hud-scroll"><span>Scroll to explore</span><i data-lucide="chevron-down"></i></div>
 
     </div>
   </header>
 
-  <!-- Section 2: Problem Strip -->
-  <section class="section section-alt">
-    <div class="container">
-      <div class="problem-grid">
-        
-        <!-- Column 1 -->
-        <div class="problem-item reveal reveal-delay-1">
-          <div class="problem-icon">
-            <i data-lucide="calendar-x-2"></i>
-          </div>
-          <h4>Calendars just show deadlines</h4>
-          <p>They tell you when things are due — not when to work on them. That gap is where procrastination lives.</p>
-        </div>
+  <!-- Section 2: Pinned Vertical Story (Problem → Procrastination → Solution) -->
+  <section id="story" class="story-section" data-section="1">
+    <div class="story-pin">
 
-        <!-- Column 2 -->
-        <div class="problem-item reveal reveal-delay-2">
-          <div class="problem-icon">
-            <i data-lucide="brain-circuit"></i>
-          </div>
-          <h4>Cramming isn't a you problem</h4>
-          <p>Students don't procrastinate because they're lazy. They do it because no tool actually helps them plan their work.</p>
-        </div>
+      <!-- Vertical step rail -->
+      <div class="story-rail">
+        <button class="sr-step active" data-i="0"><b>01</b><span>The Problem</span></button>
+        <button class="sr-step" data-i="1"><b>02</b><span>Procrastination</span></button>
+        <button class="sr-step" data-i="2"><b>03</b><span>Our Solution</span></button>
+      </div>
 
-        <!-- Column 3 -->
-        <div class="problem-item reveal reveal-delay-3">
-          <div class="problem-icon">
-            <i data-lucide="sparkles"></i>
+      <!-- Stacked, cross-fading slides -->
+      <div class="story-slides">
+
+        <!-- Slide 1: The Problem -->
+        <article class="story-slide is-active" data-i="0">
+          <div class="story-copy">
+            <span class="h-step">01</span>
+            <h2>The Problem</h2>
+            <p>Calendars like this are overwhelming. They overload you with
+               deadlines and due dates, which you often don't see until the
+               day before.</p>
           </div>
-          <h4>Prio fills that gap</h4>
-          <p>Type one sentence. Prio reads it, estimates your workload, assigns priority, and builds your entire day automatically.</p>
-        </div>
+          <div class="story-visual">
+              <div class="cal-stage">
+                <div class="cal-glow cal-glow--red"></div>
+                <div class="busy-counter">
+                  <div class="busy-counter-main">
+                    <span class="busy-num" data-target="47">0</span>
+                    <span class="busy-label">tasks this month</span>
+                  </div>
+                  <div class="busy-counter-sub">
+                    <i data-lucide="alert-triangle"></i>
+                    <span><b class="busy-num" data-target="12">0</b> due this week</span>
+                  </div>
+                </div>
+                <div class="mini-calendar mini-calendar--busy">
+                  <div class="cal-weekdays">
+                    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                  <div class="cal-grid">
+                    <!-- 35 day cells filled with task pills, no text -->
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"><span class="pill red"></span></div>
+                    <div class="cal-cell"><span class="pill blue"></span></div>
+                    <div class="cal-cell alert"><span class="pill yellow"></span><span class="pill red"></span></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"><span class="pill blue"></span></div>
+                    <div class="cal-cell"><span class="pill red"></span></div>
+                    <div class="cal-cell"><span class="pill blue"></span><span class="pill yellow"></span></div>
+                    <div class="cal-cell"><span class="pill red"></span></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"><span class="pill yellow"></span></div>
+                    <div class="cal-cell alert"><span class="pill red"></span><span class="pill blue"></span></div>
+                    <div class="cal-cell"><span class="pill blue"></span></div>
+                    <div class="cal-cell"><span class="pill red"></span></div>
+                    <div class="cal-cell"><span class="pill yellow"></span><span class="pill red"></span></div>
+                    <div class="cal-cell"><span class="pill blue"></span></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"><span class="pill red"></span></div>
+                    <div class="cal-cell"><span class="pill blue"></span><span class="pill yellow"></span></div>
+                    <div class="cal-cell alert"><span class="pill red"></span></div>
+                    <div class="cal-cell"><span class="pill yellow"></span></div>
+                    <div class="cal-cell"><span class="pill red"></span><span class="pill blue"></span></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"><span class="pill blue"></span></div>
+                    <div class="cal-cell"><span class="pill red"></span></div>
+                    <div class="cal-cell"><span class="pill yellow"></span><span class="pill red"></span></div>
+                    <div class="cal-cell"><span class="pill blue"></span></div>
+                    <div class="cal-cell"><span class="pill red"></span></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"><span class="pill yellow"></span></div>
+                    <div class="cal-cell alert"><span class="pill red"></span><span class="pill blue"></span></div>
+                    <div class="cal-cell"><span class="pill blue"></span></div>
+                    <div class="cal-cell"><span class="pill red"></span></div>
+                    <div class="cal-cell"><span class="pill yellow"></span></div>
+                    <div class="cal-cell"><span class="pill red"></span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </article>
+
+        <!-- Slide 2: Procrastination -->
+        <article class="story-slide" data-i="1">
+          <div class="story-copy">
+            <span class="h-step">02</span>
+            <h2>Procrastination</h2>
+            <p>Without knowing what to work on and when, you fill your day
+               with other things such as video games, scrolling, and wasting
+               your time. By the time you realize you have an essay due
+               tomorrow, you wished you had started working on it a week ago.</p>
+          </div>
+          <div class="story-visual">
+              <div class="proc-stage">
+                <!-- Orbiting distraction icons -->
+                <div class="proc-orbit">
+                  <div class="orbit-icon o-1"><i data-lucide="gamepad-2"></i></div>
+                  <div class="orbit-icon o-2"><i data-lucide="tv"></i></div>
+                  <div class="orbit-icon o-3"><i data-lucide="music"></i></div>
+                  <div class="orbit-icon o-4"><i data-lucide="message-circle"></i></div>
+                </div>
+
+                <!-- Phone with endless auto-scrolling feed -->
+                <div class="phone-frame proc-phone">
+                  <div class="phone-notch"></div>
+                  <div class="proc-screen">
+                    <div class="proc-feed">
+                      <div class="feed-tile"><span class="feed-thumb t-a"><i data-lucide="play"></i></span><span class="feed-bars"><b></b><b></b></span></div>
+                      <div class="feed-tile"><span class="feed-thumb t-b"><i data-lucide="play"></i></span><span class="feed-bars"><b></b><b></b></span></div>
+                      <div class="feed-tile"><span class="feed-thumb t-c"><i data-lucide="play"></i></span><span class="feed-bars"><b></b><b></b></span></div>
+                      <div class="feed-tile"><span class="feed-thumb t-d"><i data-lucide="play"></i></span><span class="feed-bars"><b></b><b></b></span></div>
+                      <!-- duplicate set for seamless infinite loop -->
+                      <div class="feed-tile"><span class="feed-thumb t-a"><i data-lucide="play"></i></span><span class="feed-bars"><b></b><b></b></span></div>
+                      <div class="feed-tile"><span class="feed-thumb t-b"><i data-lucide="play"></i></span><span class="feed-bars"><b></b><b></b></span></div>
+                      <div class="feed-tile"><span class="feed-thumb t-c"><i data-lucide="play"></i></span><span class="feed-bars"><b></b><b></b></span></div>
+                      <div class="feed-tile"><span class="feed-thumb t-d"><i data-lucide="play"></i></span><span class="feed-bars"><b></b><b></b></span></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Ignored deadline notification sliding in from the top -->
+                <div class="proc-notif">
+                  <i data-lucide="alarm-clock"></i>
+                  <div>
+                    <span class="proc-notif-title">Essay due tomorrow</span>
+                    <span class="proc-notif-sub">You haven't started yet</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </article>
+
+        <!-- Slide 3: Our Solution -->
+        <article class="story-slide" data-i="2">
+          <div class="story-copy">
+            <span class="h-step">03</span>
+            <h2>Our Solution</h2>
+            <p>Prio solves all these problems. Once you add your task to the
+               calendar, the app adds work blocks for the days leading up to
+               your due date, which also show up on your calendar. This way,
+               when you check your calendar when you sit down to work, you know
+               exactly what you have to work on.</p>
+          </div>
+          <div class="story-visual">
+              <div class="cal-stage">
+                <div class="cal-glow cal-glow--blue breathe"></div>
+                <div class="mini-calendar mini-calendar--solved">
+                  <div class="cal-weekdays">
+                    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                  <div class="cal-grid">
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"><span class="block work" style="--i:0"><i data-lucide="check"></i></span></div>
+                    <div class="cal-cell"><span class="block work" style="--i:1"><i data-lucide="check"></i></span></div>
+                    <div class="cal-cell"><span class="block work" style="--i:2"><i data-lucide="check"></i></span></div>
+                    <div class="cal-cell due-cell"><i data-lucide="flag"></i></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                    <div class="cal-cell"></div>
+                  </div>
+                </div>
+                <!-- Connecting trail that draws itself toward the due date -->
+                <div class="plan-trail">
+                  <span class="trail-fill"></span>
+                  <span class="trail-node n-0"></span>
+                  <span class="trail-node n-1"></span>
+                  <span class="trail-node n-2"></span>
+                  <span class="trail-flag"><i data-lucide="flag"></i></span>
+                </div>
+              </div>
+            </div>
+        </article>
 
       </div>
     </div>
   </section>
 
-  <!-- Section 3: Feature Cards -->
-  <section class="section">
-    <div class="container">
-      
-      <div class="section-header reveal">
-        <h2>Everything you need. Nothing you don't.</h2>
+  <!-- Section 3: Features (the model flies to the right) -->
+  <section id="features" class="features-section" data-section="2">
+    <div class="features-inner">
+
+      <div class="features-head reveal">
+        <span class="h-step">Everything you need</span>
+        <h2>Everything you need.<br>Nothing you don't.</h2>
         <p>Prio is built by students who were tired of juggling six classes, practice, and a social life with tools that weren't built for them.</p>
       </div>
 
-      <div class="feature-cards-grid">
-        
-        <!-- Card 1 -->
-        <div class="card feature-card reveal reveal-delay-1">
-          <div class="feature-card-icon">
-            <i data-lucide="message-square-plus"></i>
-          </div>
+      <div class="features-grid">
+
+        <div class="feature-card reveal reveal-delay-1">
+          <span class="feature-card-num">01</span>
+          <div class="feature-card-icon"><i data-lucide="message-square-plus"></i></div>
           <h3>Just type it.</h3>
-          <p>'English essay due Friday, probably 2 hours' — that's all it takes. Prio reads plain English and builds the plan from there. No forms, no dropdowns.</p>
+          <p>Compared to traditional calendars, you input your assignments to our smart AI in plain English, and the logic does the rest. This can save minutes trying to figure out buggy interfaces.</p>
         </div>
 
-        <!-- Card 2 -->
-        <div class="card feature-card reveal reveal-delay-2">
-          <div class="feature-card-icon">
-            <i data-lucide="layout-list"></i>
-          </div>
+        <div class="feature-card reveal reveal-delay-2">
+          <span class="feature-card-num">02</span>
+          <div class="feature-card-icon"><i data-lucide="layout-list"></i></div>
           <h3>Your day, planned for you.</h3>
-          <p>Each morning, Prio builds a prioritized checklist of exactly what to work on — balanced around your free time and sorted by urgency automatically.</p>
+          <p>Prio arranges your home screen into an organized checklist of everything you need to do today, sorted by urgency and prioritizing your schedule first.</p>
         </div>
 
-        <!-- Card 3 -->
-        <div class="card feature-card reveal reveal-delay-3">
-          <div class="feature-card-icon">
-            <i data-lucide="timer"></i>
-          </div>
-          <h3>A timer that actually helps.</h3>
-          <p>Start a session and Prio counts down through your tasks. Finish one, it moves to the next. Running out of time? Low-priority tasks shift to tomorrow on their own.</p>
+        <div class="feature-card reveal reveal-delay-3">
+          <span class="feature-card-num">03</span>
+          <div class="feature-card-icon"><i data-lucide="calendar"></i></div>
+          <h3>Stress-free calendar.</h3>
+          <p>Normal calendars overwhelm you with your work right when you look at them. Ours has all the same functionality, but with a layout designed to tell you just what you need, and that's it.</p>
         </div>
 
-        <!-- Card 4 -->
-        <div class="card feature-card reveal reveal-delay-4">
-          <div class="feature-card-icon">
-            <i data-lucide="layers"></i>
-          </div>
+        <div class="feature-card reveal reveal-delay-4">
+          <span class="feature-card-num">04</span>
+          <div class="feature-card-icon"><i data-lucide="layers"></i></div>
           <h3>Big projects, small steps.</h3>
-          <p>Research papers and long-term assignments get broken into AI-generated subtasks with their own deadlines. A progress bar shows exactly how far you've come.</p>
+          <p>Larger projects such as essays or long term assignments get broken down into subtasks, helping you reach your goals without setting you behind on schoolwork.</p>
         </div>
 
       </div>
-
     </div>
   </section>
 
-  <!-- Section 4: Student Quotes -->
-  <section class="section section-alt">
-    <div class="container">
-      
-      <div class="section-header reveal" style="margin-bottom: var(--space-lg);">
-        <h2>Students who stopped winging it</h2>
+  <!-- Looping marquee of natural-language inputs -->
+  <div class="nl-marquee" aria-hidden="true">
+    <div class="nl-track">
+      <span class="nl-chip"><i data-lucide="message-square-plus"></i>"English essay due Friday, ~2 hours"</span>
+      <span class="nl-chip"><i data-lucide="message-square-plus"></i>"Calc exam next Thursday, really hard"</span>
+      <span class="nl-chip"><i data-lucide="message-square-plus"></i>"Soccer practice every Monday 3–5pm"</span>
+      <span class="nl-chip"><i data-lucide="message-square-plus"></i>"Only have 1 hour to work today"</span>
+      <span class="nl-chip"><i data-lucide="message-square-plus"></i>"Move my history reading to tomorrow"</span>
+      <span class="nl-chip"><i data-lucide="message-square-plus"></i>"Lab report due in 3 days"</span>
+      <!-- duplicate set for seamless loop -->
+      <span class="nl-chip"><i data-lucide="message-square-plus"></i>"English essay due Friday, ~2 hours"</span>
+      <span class="nl-chip"><i data-lucide="message-square-plus"></i>"Calc exam next Thursday, really hard"</span>
+      <span class="nl-chip"><i data-lucide="message-square-plus"></i>"Soccer practice every Monday 3–5pm"</span>
+      <span class="nl-chip"><i data-lucide="message-square-plus"></i>"Only have 1 hour to work today"</span>
+      <span class="nl-chip"><i data-lucide="message-square-plus"></i>"Move my history reading to tomorrow"</span>
+      <span class="nl-chip"><i data-lucide="message-square-plus"></i>"Lab report due in 3 days"</span>
+    </div>
+  </div>
+
+  <!-- Section 4: Live App Demo (type a sentence → plan appears) -->
+  <section id="demo" class="section demo-section" data-section="3">
+    <div class="container demo-grid">
+
+      <div class="demo-copy reveal">
+        <span class="h-step">See it work</span>
+        <h2>From a sentence to a plan.</h2>
+        <p>Type what's on your plate in plain English. Prio reads it, weighs how long it'll take, and lays out your day — instantly.</p>
+
+        <div class="stats-row">
+          <div class="stat">
+            <b class="stat-num" data-target="10" data-suffix="s">0</b>
+            <small>to plan your week</small>
+          </div>
+          <div class="stat">
+            <b class="stat-num" data-target="6">0</b>
+            <small>classes balanced</small>
+          </div>
+          <div class="stat">
+            <b class="stat-num" data-target="100" data-suffix="%">0</b>
+            <small>of deadlines tracked</small>
+          </div>
+        </div>
       </div>
 
-      <div class="quotes-grid">
-        
-        <!-- Quote 1 -->
-        <div class="card reveal reveal-delay-1">
-          <div class="quote-mark">“</div>
-          <p class="quote-text">"I used to do all my homework the night before. Prio showed me I had time all along — I just didn't know how to use it."</p>
-          <div class="quote-divider"></div>
-          <span class="quote-name">Alex K.</span>
-          <p class="quote-desc">High School Junior</p>
+      <div class="demo-phone-wrap reveal reveal-delay-2">
+        <div class="phone-glow"></div>
+        <div class="phone-frame demo-phone">
+          <div class="phone-notch"></div>
+          <div class="demo-screen">
+            <div class="demo-screen-head">
+              <span class="demo-dot"></span>
+              <span class="demo-screen-title">Add a task</span>
+            </div>
+            <div class="demo-input">
+              <span id="demo-typed"></span><span class="demo-caret"></span>
+            </div>
+            <div class="demo-plan-label">Your plan</div>
+            <div class="demo-plan" id="demo-plan"></div>
+          </div>
         </div>
-
-        <!-- Quote 2 -->
-        <div class="card reveal reveal-delay-2">
-          <div class="quote-mark">“</div>
-          <p class="quote-text">"The natural language input is insane. I type my assignments between classes in 10 seconds and my whole day is planned."</p>
-          <div class="quote-divider"></div>
-          <span class="quote-name">Maya R.</span>
-          <p class="quote-desc">College Freshman</p>
-        </div>
-
-        <!-- Quote 3 -->
-        <div class="card reveal reveal-delay-3">
-          <div class="quote-mark">“</div>
-          <p class="quote-text">"Every other planner app felt like homework itself. Prio is the first one that actually reduces my stress."</p>
-          <div class="quote-divider"></div>
-          <span class="quote-name">Jordan T.</span>
-          <p class="quote-desc">College Sophomore</p>
-        </div>
-
       </div>
 
     </div>
   </section>
 
   <!-- Section 5: Final CTA Banner -->
-  <section class="cta-banner">
+  <section class="cta-banner" data-section="4">
     <div class="cta-banner-inner reveal">
       <h2>Ready to stop winging it?</h2>
       <p>Join students who finally have a plan. Free to download on iOS and Android.</p>
@@ -254,7 +444,6 @@
     <div class="container footer-grid">
 
       <div class="footer-brand">
-        <!-- Logo Image Swap -->
         <a href="index.html" class="nav-logo" style="margin-bottom:12px; display:inline-flex;">
           <img src="assets/logo.png" alt="Prio Logo">
           <span>Prio</span>
@@ -297,8 +486,221 @@
   <!-- Particle Canvas -->
   <canvas id="particle-canvas" aria-hidden="true"></canvas>
 
-  <!-- Script triggers -->
+  <!-- Three.js 3D Canvas -->
+  <canvas id="three-canvas" aria-hidden="true"></canvas>
+
+  <!-- Scripts -->
   <script src="script.js"></script>
   <script>lucide.createIcons();</script>
+  <script src="scene.js"></script>
+
+  <!-- Pinned Vertical Story (Problem → Procrastination → Solution) -->
+  <script>
+    (function initStory() {
+      if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+      gsap.registerPlugin(ScrollTrigger);
+
+      const section = document.querySelector('#story');
+      if (!section) return;
+
+      const slides    = gsap.utils.toArray('.story-slide');
+      const steps     = gsap.utils.toArray('.sr-step');
+      const slidesBox = section.querySelector('.story-slides');
+      const rail      = section.querySelector('.story-rail');
+
+      function setActive(idx) {
+        slides.forEach((s, i) => s.classList.toggle('is-active', i === idx));
+        steps.forEach((s, i) => s.classList.toggle('active', i === idx));
+      }
+
+      // Fade the story text/rail out over the last stretch of the pin, so the
+      // 3D model can glide across to the right over empty space.
+      function fadeOut(progress) {
+        const f = Math.max(0, Math.min(1, (progress - 0.82) / 0.18));
+        const o = String(1 - f);
+        if (slidesBox) slidesBox.style.opacity = o;
+        if (rail) rail.style.opacity = o;
+      }
+
+      // Desktop: pin the section and cross-fade the three slides as you scroll.
+      // Mobile (<769px): no pin — slides stack normally (see CSS).
+      const mm = gsap.matchMedia();
+      mm.add('(min-width: 769px)', () => {
+        const st = ScrollTrigger.create({
+          trigger: section,
+          start: 'top top',
+          end: '+=240%',
+          pin: true,
+          pinSpacing: true,
+          scrub: 1,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            // Map the first 82% of the pin to the three slides; the tail is the hand-off.
+            const idx = Math.min(slides.length - 1, Math.floor((self.progress / 0.82) * slides.length));
+            setActive(idx);
+            fadeOut(self.progress);
+          },
+        });
+
+        // Let the step buttons jump to their slide.
+        steps.forEach((step, i) => {
+          step.addEventListener('click', () => {
+            const target = st.start + (st.end - st.start) * ((i + 0.5) / slides.length);
+            window.scrollTo({ top: target, behavior: 'smooth' });
+          });
+        });
+
+        return () => {
+          st.kill();
+          if (slidesBox) slidesBox.style.opacity = '';
+          if (rail) rail.style.opacity = '';
+        };
+      });
+
+      window.addEventListener('load', () => ScrollTrigger.refresh());
+    })();
+
+    // ── Brief pause on the Features section as you scroll past it ──
+    (function initFeaturesPause() {
+      if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+      const features = document.querySelector('#features');
+      if (!features) return;
+
+      const mm = gsap.matchMedia();
+      mm.add('(min-width: 769px)', () => {
+        const st = ScrollTrigger.create({
+          trigger: features,
+          start: 'top top',
+          end: '+=55%',     // holds for a little over half a screen
+          pin: true,
+          pinSpacing: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        });
+        return () => st.kill();
+      });
+    })();
+
+    // ── Shimmering "overwhelm" effect: randomise pill pulse timing ──
+    (function shimmerPills() {
+      document.querySelectorAll('.mini-calendar--busy .pill').forEach((pill) => {
+        pill.style.animationDelay    = (-Math.random() * 2.4) + 's';
+        pill.style.animationDuration = (1.8 + Math.random() * 1.6) + 's';
+      });
+    })();
+
+    // ── Count-up numbers when scrolled into view ──
+    (function countUp() {
+      const els = document.querySelectorAll('[data-target]');
+      if (!els.length) return;
+
+      const run = (el) => {
+        const target = parseFloat(el.getAttribute('data-target'));
+        const suffix = el.getAttribute('data-suffix') || '';
+        const dur = 1400;
+        const start = performance.now();
+        const tick = (now) => {
+          const t = Math.min((now - start) / dur, 1);
+          const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+          el.textContent = Math.round(target * eased) + suffix;
+          if (t < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      };
+
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            run(entry.target);
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.4 });
+
+      els.forEach((el) => io.observe(el));
+    })();
+
+    // ── Live demo: type a sentence → reveal a plan, on loop ──
+    (function liveDemo() {
+      const typed = document.getElementById('demo-typed');
+      const plan  = document.getElementById('demo-plan');
+      if (!typed || !plan) return;
+
+      const demos = [
+        {
+          text: 'English essay due Friday, ~2 hours',
+          plan: [
+            { t: 'Today · Outline the essay',      tag: '30 min', dot: 'blue'  },
+            { t: 'Wed · Draft body paragraphs',    tag: '1 hr',   dot: 'blue'  },
+            { t: 'Thu · Edit & finish',            tag: '30 min', dot: 'green' },
+          ],
+        },
+        {
+          text: 'Calc exam next Thursday, really hard',
+          plan: [
+            { t: 'Today · Review chapter 4',       tag: '45 min', dot: 'blue'  },
+            { t: 'Tue · Practice problems',        tag: '1 hr',   dot: 'blue'  },
+            { t: 'Wed · Full practice exam',       tag: '1 hr',   dot: 'red'   },
+          ],
+        },
+        {
+          text: 'Lab report due in 3 days',
+          plan: [
+            { t: 'Today · Crunch the data',        tag: '40 min', dot: 'blue'  },
+            { t: 'Tomorrow · Write up results',    tag: '1 hr',   dot: 'blue'  },
+            { t: 'Day 3 · Proof & submit',         tag: '25 min', dot: 'green' },
+          ],
+        },
+      ];
+
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+      async function typeText(str) {
+        typed.textContent = '';
+        for (let i = 0; i < str.length; i++) {
+          typed.textContent += str[i];
+          await wait(38 + Math.random() * 45);
+        }
+      }
+
+      async function showPlan(items) {
+        plan.innerHTML = '';
+        for (const item of items) {
+          const row = document.createElement('div');
+          row.className = 'plan-row';
+          row.innerHTML =
+            '<span class="plan-dot ' + item.dot + '"></span>' +
+            '<span class="plan-text">' + item.t + '</span>' +
+            '<span class="plan-tag">' + item.tag + '</span>';
+          plan.appendChild(row);
+          // force reflow then animate in
+          requestAnimationFrame(() => row.classList.add('in'));
+          await wait(260);
+        }
+      }
+
+      async function loop() {
+        let i = 0;
+        // small initial delay so it doesn't run before the section is seen
+        await wait(600);
+        while (true) {
+          const demo = demos[i % demos.length];
+          await typeText(demo.text);
+          await wait(450);
+          await showPlan(demo.plan);
+          await wait(2600);
+          plan.classList.add('clearing');
+          await wait(450);
+          plan.classList.remove('clearing');
+          plan.innerHTML = '';
+          await wait(300);
+          i++;
+        }
+      }
+
+      loop();
+    })();
+  </script>
 </body>
 </html>

@@ -148,10 +148,96 @@
 .theme-toggle:hover { color: var(--primary); background: var(--bg-card); }
 .theme-toggle i, .theme-toggle svg { width: 22px; height: 22px; }
 
+/* ── Legal modal (Privacy Policy / Terms of Use) ── */
+.legal-modal { position: fixed; inset: 0; z-index: 1000; display: none; }
+.legal-modal.open { display: block; }
+.legal-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(3, 6, 12, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.legal-panel {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(900px, 94vw);
+  height: min(88vh, 1000px);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-elev);
+  color: var(--text-muted);
+  border: 1px solid var(--border-focus);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+.legal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.legal-title { font-size: 20px; color: var(--text-main); }
+.legal-close {
+  background: none;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  color: var(--text-main);
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s, border-color 0.2s;
+}
+.legal-close:hover { background: var(--bg-card); border-color: var(--border-focus); }
+.legal-close i, .legal-close svg { width: 20px; height: 20px; }
+.legal-body { padding: 24px 28px 40px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.legal-body h2 { font-size: 23px; margin: 4px 0 14px; }
+.legal-body h3 { font-size: 18px; margin: 24px 0 8px; color: var(--text-main); }
+.legal-body h4 { font-size: 15px; margin: 16px 0 6px; color: var(--text-main); }
+.legal-body p { margin: 0 0 12px; font-size: 14.5px; line-height: 1.7; color: var(--text-muted); }
+.legal-body ul, .legal-body ol { margin: 0 0 14px; padding-left: 22px; }
+.legal-body li { margin: 0 0 7px; font-size: 14.5px; line-height: 1.6; color: var(--text-muted); list-style: disc; }
+.legal-body ol li { list-style: decimal; }
+.legal-body a { color: var(--primary); text-decoration: underline; }
+.legal-body strong { color: var(--text-main); }
+.legal-body hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+body.modal-open { overflow: hidden; }
+@media (max-width: 600px) {
+  .legal-panel {
+    width: 100vw; height: 100vh; height: 100svh;
+    border: none; border-radius: 0;
+  }
+  .legal-body { padding: 18px 18px 36px; }
+}
+
+/* ── "Coming soon" toast ── */
+.coming-soon-toast {
+  position: fixed;
+  left: 50%; bottom: 28px;
+  transform: translateX(-50%) translateY(20px);
+  z-index: 1100;
+  width: min(420px, 92vw);
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  background: var(--bg-elev);
+  color: var(--text-main);
+  border: 1px solid var(--border-focus);
+  box-shadow: var(--shadow-lg);
+  font-size: 14px; line-height: 1.5;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.coming-soon-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+.coming-soon-toast i { color: var(--primary); flex-shrink: 0; width: 22px; height: 22px; }
+.coming-soon-toast a { color: var(--primary); font-weight: 600; }
+
 /* ── Base Reset ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 
 body {
   font-family: var(--font);
@@ -162,6 +248,8 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   position: relative;
+  width: 100%;
+  max-width: 100%;
 }
 
 /* ── Particle Canvas Background ── */
@@ -464,7 +552,7 @@ footer {
 }
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: var(--space-lg);
   padding-bottom: var(--space-lg);
   border-bottom: 1px solid var(--border);
@@ -1865,8 +1953,13 @@ footer {
     padding: var(--space-xl) var(--space-md);
     opacity: 1; visibility: visible; transform: none;
     text-align: center;
+    min-width: 0;
   }
   .story-copy p { margin: 0 auto; }
+  /* Let grid children shrink, and cap the fixed-width procrastination stage so
+     it can't push the page wider than the screen (the mobile sideways-scroll). */
+  .story-slide > * { min-width: 0; }
+  .proc-stage { width: 100%; max-width: 300px; height: 440px; }
 
   /* Features */
   .features-section { min-height: 0; }

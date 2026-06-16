@@ -41,6 +41,38 @@ if (menuBtn && mobileMenu) {
   });
 }
 
+// ── "Coming soon" message for download / store buttons ─────────
+// Prio isn't released yet, so any App Store / Google Play button shows a
+// friendly notice instead of navigating. Delegated so it covers every page.
+(function comingSoon() {
+  let toast, hideTimer;
+  function ensure() {
+    if (toast) return toast;
+    toast = document.createElement('div');
+    toast.className = 'coming-soon-toast';
+    toast.setAttribute('role', 'status');
+    toast.innerHTML =
+      '<i data-lucide="rocket"></i>' +
+      '<div><strong>Coming soon!</strong><br>Prio isn’t available to download just yet. ' +
+      'Follow <a href="https://instagram.com/theprioapp" target="_blank" rel="noopener">@theprioapp</a> for launch news.</div>';
+    document.body.appendChild(toast);
+    toast.addEventListener('click', (e) => { if (e.target.tagName !== 'A') hide(); });
+    if (window.lucide) window.lucide.createIcons();
+    return toast;
+  }
+  function hide() { if (toast) toast.classList.remove('show'); }
+  function show() {
+    const t = ensure();
+    t.classList.add('show');
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(hide, 5000);
+  }
+  document.addEventListener('click', (e) => {
+    const trigger = e.target.closest('.js-coming-soon');
+    if (trigger) { e.preventDefault(); show(); }
+  });
+})();
+
 // ── Lock zoom on mobile ────────────────────────────────────────
 // Accidental pinch / zoom-out left the responsive layout in a broken state.
 // The viewport meta locks scale; this also blocks the gesture & ctrl-wheel

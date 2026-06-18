@@ -2,75 +2,49 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <!-- Apply the saved theme before paint to avoid a flash (default: dark) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script>
-    (function () {
-      try {
-        var t = localStorage.getItem('prio-theme');
-        document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
-      } catch (e) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-      }
-    })();
+    document.documentElement.setAttribute('data-theme', 'light');
   </script>
-  <meta name="description" content="Prio is coming soon to iOS and Android — completely free, no catches. Get answers to frequently asked questions.">
+  <meta name="description" content="Prio is coming soon to iOS and Android. Free, no catches. Get answers to frequently asked questions.">
   <title>Download Prio — AI Student Planner</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="apple-touch-icon" href="assets/logo.png">
+
+  <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
   <link rel="stylesheet" href="style.css">
-  <!-- GSAP + ScrollTrigger -->
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <!-- Three.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-  <!-- Encoded 3D Model -->
-  <script src="assets/model_data.js"></script>
 </head>
 <body>
 
-  <!-- Floating Blurred Gradient Background Orbs -->
-  <div class="orb-container">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-  </div>
+  <canvas id="prio-bg"></canvas>
 
-  <!-- Navigation Bar -->
+  <div class="cursor-spotlight" aria-hidden="true"></div>
+  <div class="blob blob-1" aria-hidden="true"></div>
+  <div class="blob blob-2" aria-hidden="true"></div>
+
+  <!-- Navigation -->
   <nav id="navbar">
     <div class="nav-container">
-
-      <!-- Logo Image Swap -->
       <a href="index.html" class="nav-logo">
         <img src="assets/logo.png" alt="Prio Logo">
         <span>Prio</span>
       </a>
-
-      <!-- Desktop Links -->
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
         <li><a href="features.html">Features</a></li>
       </ul>
-
-      <!-- CTA -->
-      <a href="download.html" class="btn btn-primary nav-cta">Download the App</a>
-
-      <!-- Light / Dark Theme Toggle -->
-      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light and dark mode">
-        <i data-lucide="moon"></i>
-      </button>
-
-      <!-- Mobile Hamburger -->
+      <a href="download.html" class="btn btn-primary nav-cta active">
+        <i class="ti ti-device-mobile"></i><span>Download</span>
+      </a>
       <button id="menu-btn" aria-label="Open menu" aria-expanded="false">
-        <i data-lucide="menu"></i>
+        <i class="ti ti-menu-2"></i>
       </button>
-
     </div>
-
-    <!-- Mobile Dropdown -->
     <div id="mobile-menu">
       <a href="index.html">Home</a>
       <a href="features.html">Features</a>
@@ -78,16 +52,15 @@
     </div>
   </nav>
 
-  <!-- Section 1: Hero -->
+  <!-- Hero -->
   <header class="download-hero">
     <div class="download-hero-glow"></div>
     <div class="container reveal">
-      <span class="eyebrow">✦  Coming Soon</span>
-      <h1>Prio is coming soon.</h1>
-      <p>We're putting the finishing touches on Prio. It'll be completely free on iOS and Android — no catches, no strings attached.</p>
+      <span class="eyebrow">Coming Soon</span>
+      <h1>Prio is almost here.</h1>
+      <p>We're putting the finishing touches on Prio. It'll be free on iOS and Android with no strings attached.</p>
 
       <div class="download-hero-buttons">
-        <!-- iOS App Store Badge — not live yet; shows a "coming soon" notice -->
         <a href="#" class="badge-btn ios js-coming-soon">
           <div class="badge-icon">
             <svg viewBox="0 0 170 170" fill="currentColor" width="20" height="20">
@@ -100,7 +73,6 @@
           </div>
         </a>
 
-        <!-- Android Google Play Badge — not live yet; shows a "coming soon" notice -->
         <a href="#" class="badge-btn android js-coming-soon">
           <div class="badge-icon">
             <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
@@ -114,106 +86,97 @@
         </a>
       </div>
 
-      <p style="font-size: 13px; color: var(--text-faint); font-weight: 500;">
+      <p style="font-size:13px; color:var(--ink-3); font-weight:500; margin-bottom:0;">
         Free forever &nbsp;·&nbsp; No catches &nbsp;·&nbsp; Coming soon to iOS &amp; Android
       </p>
     </div>
   </header>
 
-  <!-- Section 3: FAQ -->
+  <!-- FAQ -->
   <section class="section section-alt">
     <div class="container">
-      
       <div class="section-header reveal">
         <h2>Got questions?</h2>
+        <p>Everything you need to know before Prio launches.</p>
       </div>
 
       <div class="faq-list">
-        
-        <!-- Q1 -->
+
         <div class="faq-item reveal reveal-delay-1">
           <button class="faq-question">
-            <span>Is Prio really free?</span>
-            <span class="faq-icon"><i data-lucide="chevron-down"></i></span>
+            <span>Is Prio free?</span>
+            <span class="faq-icon"><i class="ti ti-chevron-down"></i></span>
           </button>
           <div class="faq-answer">
-            <p>Yes — completely free. No catches, no strings attached. Every part of Prio — natural language input, AI scheduling, timer, calendar, and projects — is free to download and use. There's no paywall and nothing locked behind an upgrade.</p>
+            <p>Yes, free. Every part of Prio (natural language input, AI scheduling, timer, calendar, and projects) is free to download and use. No paywall and nothing locked behind an upgrade.</p>
           </div>
         </div>
 
-        <!-- Q2 -->
         <div class="faq-item reveal reveal-delay-2">
           <button class="faq-question">
             <span>What devices does Prio support?</span>
-            <span class="faq-icon"><i data-lucide="chevron-down"></i></span>
+            <span class="faq-icon"><i class="ti ti-chevron-down"></i></span>
           </button>
           <div class="faq-answer">
             <p>Prio is available on iPhone (iOS 16 and above) and Android (version 10 and above). There is no web version at this time.</p>
           </div>
         </div>
 
-        <!-- Q4 -->
-        <div class="faq-item reveal reveal-delay-4">
+        <div class="faq-item reveal reveal-delay-3">
           <button class="faq-question">
             <span>How does the AI know how long my assignments will take?</span>
-            <span class="faq-icon"><i data-lucide="chevron-down"></i></span>
+            <span class="faq-icon"><i class="ti ti-chevron-down"></i></span>
           </button>
           <div class="faq-answer">
-            <p>When you add a task you can tell Prio the estimated time and difficulty. If you don't mention them, Prio uses your past patterns and the subject matter to make a smart estimate. You can always adjust it manually.</p>
+            <p>When you add a task you can tell Prio the estimated time and difficulty. If you don't mention them, Prio uses your past patterns and the subject matter to make a smart estimate. You can adjust it at any time.</p>
           </div>
         </div>
 
-        <!-- Q5 -->
         <div class="faq-item reveal">
           <button class="faq-question">
             <span>Is my data private and secure?</span>
-            <span class="faq-icon"><i data-lucide="chevron-down"></i></span>
+            <span class="faq-icon"><i class="ti ti-chevron-down"></i></span>
           </button>
           <div class="faq-answer">
-            <p>Your assignments and schedule are stored securely in the cloud. We do not sell or share your personal data with anyone. See our Privacy Policy for the full details.</p>
+            <p>Your assignments and schedule are stored in the cloud with encryption at rest. We do not sell or share your personal data with anyone. See our Privacy Policy for full details.</p>
           </div>
         </div>
 
-        <!-- Q6 -->
         <div class="faq-item reveal">
           <button class="faq-question">
             <span>Is Prio only for high school students?</span>
-            <span class="faq-icon"><i data-lucide="chevron-down"></i></span>
+            <span class="faq-icon"><i class="ti ti-chevron-down"></i></span>
           </button>
           <div class="faq-answer">
-            <p>No — Prio is designed for both high school and college students. The more classes and commitments you're juggling, the more useful it becomes.</p>
+            <p>Prio works for both high school and college students. The more classes and commitments you're juggling, the more useful it becomes.</p>
           </div>
         </div>
 
-        <!-- Q7 -->
         <div class="faq-item reveal">
           <button class="faq-question">
             <span>What if I need help or have a problem?</span>
-            <span class="faq-icon"><i data-lucide="chevron-down"></i></span>
+            <span class="faq-icon"><i class="ti ti-chevron-down"></i></span>
           </button>
           <div class="faq-answer">
-            <p>Email us at <a href="mailto:contact@theprioapp.com" style="color:var(--primary); font-weight:600;">contact@theprioapp.com</a>. We read and respond to every message.</p>
+            <p>Email us at <a href="mailto:contact@theprioapp.com">contact@theprioapp.com</a>. We read and respond to every message.</p>
           </div>
         </div>
 
       </div>
-
     </div>
   </section>
 
-  <!-- Section 4: Final CTA Banner -->
+  <!-- Final CTA -->
   <section class="cta-banner">
     <div class="cta-banner-inner reveal">
       <h2>Your best semester starts with a plan.</h2>
-      <p>Prio is launching soon. Get ready to let AI do the scheduling.</p>
+      <p>Prio is launching soon. Let AI handle the scheduling so you can handle the work.</p>
       <div class="btn-group">
         <a href="#" class="btn btn-white js-coming-soon">
-          <i data-lucide="smartphone"></i>
-          <span>Coming soon to iOS</span>
+          <i class="ti ti-brand-apple"></i><span>Coming soon to iOS</span>
         </a>
         <a href="#" class="btn btn-white js-coming-soon">
-          <i data-lucide="smartphone"></i>
-          <span>Coming soon to Android</span>
+          <i class="ti ti-brand-android"></i><span>Coming soon to Android</span>
         </a>
       </div>
     </div>
@@ -222,59 +185,42 @@
   <!-- Footer -->
   <footer>
     <div class="container footer-grid">
-
       <div class="footer-brand">
-        <!-- Logo Image Swap -->
-        <a href="index.html" class="nav-logo" style="margin-bottom:12px; display:inline-flex;">
+        <a href="index.html" class="nav-logo">
           <img src="assets/logo.png" alt="Prio Logo">
           <span>Prio</span>
         </a>
-        <p style="font-size:14px; color: var(--text-faint);">
-          Turning schoolwork into daily priorities.
-        </p>
+        <p>Turning schoolwork into daily priorities.</p>
       </div>
-
       <div class="footer-links">
-        <h4 style="font-size:14px; margin-bottom:12px;">Pages</h4>
-        <ul style="display:flex; flex-direction:column; gap:8px;">
+        <h4>Pages</h4>
+        <ul>
           <li><a href="index.html">Home</a></li>
           <li><a href="features.html">Features</a></li>
           <li><a href="download.html">Download</a></li>
         </ul>
       </div>
-
       <div class="footer-links">
-        <h4 style="font-size:14px; margin-bottom:12px;">Legal</h4>
-        <ul style="display:flex; flex-direction:column; gap:8px;">
-          <li><a href="#" data-legal="privacy">Privacy Policy</a></li>
-          <li><a href="#" data-legal="terms">Terms of Use</a></li>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="legal.html?doc=privacy">Privacy Policy</a></li>
+          <li><a href="legal.html?doc=terms">Terms of Use</a></li>
         </ul>
       </div>
-
       <div class="footer-links">
-        <h4 style="font-size:14px; margin-bottom:12px;">Contact</h4>
-        <ul style="display:flex; flex-direction:column; gap:8px;">
-          <li><a href="mailto:contact@theprioapp.com" style="color: var(--primary);">contact@theprioapp.com</a></li>
-          <li><a href="https://instagram.com/theprioapp" target="_blank" rel="noopener" style="color: var(--primary); display:inline-flex; align-items:center; gap:6px;"><i data-lucide="instagram"></i>@theprioapp</a></li>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:contact@theprioapp.com" class="link-blue">contact@theprioapp.com</a></li>
+          <li><a href="https://instagram.com/theprioapp" target="_blank" rel="noopener" class="link-insta"><i class="ti ti-brand-instagram"></i>@theprioapp</a></li>
         </ul>
       </div>
-
     </div>
     <div class="footer-bottom">
       <p>© 2026 Prio. All rights reserved.</p>
     </div>
   </footer>
 
-  <!-- Particle Canvas -->
-  <canvas id="particle-canvas" aria-hidden="true"></canvas>
-
-  <!-- Three.js 3D Canvas -->
-  <canvas id="three-canvas" aria-hidden="true"></canvas>
-
-  <!-- Script triggers -->
   <script src="script.js"></script>
-  <script>lucide.createIcons();</script>
-  <script src="scene_download.js"></script>
-  <script src="legal.js"></script>
+  <script src="prio-bg.js" defer></script>
 </body>
 </html>

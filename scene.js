@@ -80,14 +80,14 @@
   // Animation state object — GSAP will tween these values
   // Hero: model is centred behind the giant "PRIO" word.
   const modelState = {
-    posX: 0,      // centre of the hero
+    posX: 1.8,    // right side of hero — matches HERO keyframe
     posY: 0,
     posZ: 0,
     rotX: 0,
     rotY: 0,
     rotZ: 0,
     scale: 0.92,
-    opacity: 1.0, // Used to fade out later
+    opacity: 1.0,
   };
 
   // Idle floating animation
@@ -194,9 +194,11 @@
     // active, so the model simply keeps its initial centred values.
 
     // Keyframes
-    const HERO  = { posX: 0,    posY: 0,   scale: 0.92, opacity: 1 };
-    const LEFT  = { posX: -2.7, posY: 0,   scale: 0.82, opacity: 1 };
-    const RIGHT = { posX: 2.6,  posY: 0,   scale: 0.8,  opacity: 1 };
+    // HERO: shifted right so it's clearly in the right half; hero text stays unobstructed
+    // LEFT/RIGHT/OUT: opacity 0 — model only visible in the hero, fades as user scrolls in
+    const HERO  = { posX: 1.8,  posY: 0,   scale: 0.92, opacity: 1 };
+    const LEFT  = { posX: 1.8,  posY: 0,   scale: 0.92, opacity: 0 };
+    const RIGHT = { posX: 2.6,  posY: 0,   scale: 0.8,  opacity: 0 };
     const OUT   = { posX: 2.6,  posY: 4.5, scale: 0.62, opacity: 0 };
 
     const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
@@ -211,7 +213,7 @@
     // Phase 1 — Hero (centre) → Story (left)
     if (story) {
       ScrollTrigger.create({
-        trigger: story, start: 'top bottom', end: 'top top',
+        trigger: story, start: 'top bottom', end: 'top 40%',
         invalidateOnRefresh: true,
         onUpdate: (self) => applyPhase(HERO, LEFT, self.progress),
         onLeaveBack: () => applyPhase(HERO, LEFT, 0),  // snap to hero above

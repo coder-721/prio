@@ -1,49 +1,103 @@
 // ── Scroll Reveal ──────────────────────────────────────────────
-const observer = new IntersectionObserver((entries) => {
+const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       entry.target.classList.add('visible');
-      observer.unobserve(entry.target);
+      revealObserver.unobserve(entry.target);
     }
   });
-}, {
-  threshold: 0.12,
-  rootMargin: '0px 0px -40px 0px'
-});
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
 document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  requestAnimationFrame(drawMissionConnectors);
 });
 
+// ── Mission S-Grid SVG Connectors ─────────────────────────────
+function drawMissionConnectors() {
+  const grid = document.querySelector('.mission-s-grid');
+  const svg  = document.querySelector('.mission-s-svg');
+  if (!grid || !svg) return;
+
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  if (isMobile) { svg.innerHTML = ''; return; }
+
+  const gRect = grid.getBoundingClientRect();
+
+  function cr(n) {
+    const el = grid.querySelector('[data-beat="' + n + '"]');
+    if (!el) return null;
+    const r = el.getBoundingClientRect();
+    const gl = gRect.left, gt = gRect.top;
+    return {
+      top:   r.top    - gt,  left:  r.left   - gl,
+      right: r.right  - gl,  bottom:r.bottom  - gt,
+      midX:  (r.left + r.right)  / 2 - gl,
+      midY:  (r.top  + r.bottom) / 2 - gt,
+    };
+  }
+
+  const r1=cr(1), r2=cr(2), r3=cr(3), r4=cr(4), r5=cr(5), r6=cr(6);
+  if (!r1||!r2||!r3||!r4||!r5||!r6) return;
+
+  // 5 connector segments:
+  // row-1 horiz | vert right col | row-2 horiz | vert left col | row-3 horiz
+  const segs = [
+    [r1.right, r1.midY,   r2.left,  r2.midY  ],  // 1→2 horizontal
+    [r2.midX,  r2.bottom, r3.midX,  r3.top   ],  // 2→3 vertical (right col)
+    [r4.right, r4.midY,   r3.left,  r3.midY  ],  // 4→3 horizontal (row 2)
+    [r4.midX,  r4.bottom, r5.midX,  r5.top   ],  // 4→5 vertical (left col)
+    [r5.right, r5.midY,   r6.left,  r6.midY  ],  // 5→6 horizontal
+  ];
+
+  svg.setAttribute('viewBox', '0 0 ' + gRect.width.toFixed(1) + ' ' + gRect.height.toFixed(1));
+  svg.innerHTML = '';
+
+  segs.forEach(function([x1,y1,x2,y2]) {
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', x1.toFixed(1)); line.setAttribute('y1', y1.toFixed(1));
+    line.setAttribute('x2', x2.toFixed(1)); line.setAttribute('y2', y2.toFixed(1));
+    line.setAttribute('stroke', 'rgba(41,159,250,0.4)');
+    line.setAttribute('stroke-width', '2');
+    line.setAttribute('stroke-linecap', 'round');
+    svg.appendChild(line);
+  });
+}
+
+// Redraw after beat reveal animations finish (beats animate translateY → 0)
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.mission-s-beat').forEach(beat => {
+    beat.addEventListener('transitionend', function handler() {
+      if (beat.classList.contains('visible')) {
+        drawMissionConnectors();
+        beat.removeEventListener('transitionend', handler);
+      }
+    });
+  });
+});
+window.addEventListener('resize', drawMissionConnectors, { passive: true });
+
 // ── Mobile Navigation ──────────────────────────────────────────
-const menuBtn   = document.getElementById('menu-btn');
+const menuBtn    = document.getElementById('menu-btn');
 const mobileMenu = document.getElementById('mobile-menu');
 if (menuBtn && mobileMenu) {
   menuBtn.addEventListener('click', () => {
     const open = mobileMenu.classList.toggle('open');
     menuBtn.setAttribute('aria-expanded', open);
     const icon = menuBtn.querySelector('i');
-    if (icon) {
-      icon.setAttribute('data-lucide', open ? 'x' : 'menu');
-      if (window.lucide) window.lucide.createIcons();
-    }
+    if (icon) icon.className = open ? 'ti ti-x' : 'ti ti-menu-2';
   });
   mobileMenu.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', () => {
       mobileMenu.classList.remove('open');
       menuBtn.setAttribute('aria-expanded', 'false');
       const icon = menuBtn.querySelector('i');
-      if (icon) {
-        icon.setAttribute('data-lucide', 'menu');
-        if (window.lucide) window.lucide.createIcons();
-      }
+      if (icon) icon.className = 'ti ti-menu-2';
     });
   });
 }
 
-// ── "Coming soon" message for download / store buttons ─────────
-// Prio isn't released yet, so any App Store / Google Play button shows a
-// friendly notice instead of navigating. Delegated so it covers every page.
+// ── "Coming soon" toast ────────────────────────────────────────
 (function comingSoon() {
   let toast, hideTimer;
   function ensure() {
@@ -52,69 +106,46 @@ if (menuBtn && mobileMenu) {
     toast.className = 'coming-soon-toast';
     toast.setAttribute('role', 'status');
     toast.innerHTML =
-      '<i data-lucide="rocket"></i>' +
-      '<div><strong>Coming soon!</strong><br>Prio isn’t available to download just yet. ' +
+      '<i class="ti ti-rocket"></i>' +
+      '<div><strong>Coming soon!</strong><br>Prio isn\'t available just yet. ' +
       'Follow <a href="https://instagram.com/theprioapp" target="_blank" rel="noopener">@theprioapp</a> for launch news.</div>';
     document.body.appendChild(toast);
     toast.addEventListener('click', (e) => { if (e.target.tagName !== 'A') hide(); });
-    if (window.lucide) window.lucide.createIcons();
     return toast;
   }
   function hide() { if (toast) toast.classList.remove('show'); }
   function show() {
-    const t = ensure();
-    t.classList.add('show');
+    ensure().classList.add('show');
     clearTimeout(hideTimer);
     hideTimer = setTimeout(hide, 5000);
   }
   document.addEventListener('click', (e) => {
-    const trigger = e.target.closest('.js-coming-soon');
-    if (trigger) { e.preventDefault(); show(); }
-  });
-})();
-
-// ── Lock zoom on mobile ────────────────────────────────────────
-// Accidental pinch / zoom-out left the responsive layout in a broken state.
-// The viewport meta locks scale; this also blocks the gesture & ctrl-wheel
-// paths that some browsers (notably iOS Safari) honor regardless of the meta.
-(function lockZoom() {
-  ['gesturestart', 'gesturechange', 'gestureend'].forEach((evt) => {
-    document.addEventListener(evt, (e) => e.preventDefault(), { passive: false });
-  });
-  document.addEventListener('wheel', (e) => {
-    if (e.ctrlKey) e.preventDefault();
-  }, { passive: false });
-  document.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '0'].includes(e.key)) e.preventDefault();
+    if (e.target.closest('.js-coming-soon')) { e.preventDefault(); show(); }
   });
 })();
 
 // ── Light / Dark Theme Toggle ──────────────────────────────────
-// The initial theme is set by a tiny inline script in each page's <head>
-// (so there's no flash). Default is dark; choice persists in localStorage.
+// Default is now LIGHT. Dark is opt-in.
 (function themeToggle() {
   const root = document.documentElement;
   const btn  = document.getElementById('theme-toggle');
 
-  const current = () => (root.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
+  const current = () => root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
 
-  // Re-render the icon fresh each time (lucide replaces <i> with <svg>, so we
-  // rebuild the inner markup rather than mutating a node that no longer exists).
   function syncIcon() {
     if (!btn) return;
-    btn.innerHTML = '<i data-lucide="' + (current() === 'light' ? 'sun' : 'moon') + '"></i>';
-    if (window.lucide) window.lucide.createIcons();
+    const icon = btn.querySelector('i');
+    if (icon) icon.className = current() === 'dark' ? 'ti ti-sun' : 'ti ti-moon';
   }
 
   syncIcon();
 
   if (btn) {
     btn.addEventListener('click', () => {
-      const next = current() === 'light' ? 'dark' : 'light';
+      const next = current() === 'dark' ? 'light' : 'dark';
       root.setAttribute('data-theme', next);
       try { localStorage.setItem('prio-theme', next); } catch (e) {}
       syncIcon();
-      // Layout-affecting variables changed; keep any pinned scroll scenes aligned.
       if (window.ScrollTrigger && typeof window.ScrollTrigger.refresh === 'function') {
         window.ScrollTrigger.refresh();
       }
@@ -127,7 +158,7 @@ const nav = document.getElementById('navbar');
 if (nav) {
   window.addEventListener('scroll', () => {
     nav.classList.toggle('scrolled', window.scrollY > 20);
-  });
+  }, { passive: true });
 }
 
 // ── Rotating Placeholder Text ──────────────────────────────────
@@ -141,6 +172,7 @@ const prompts = [
 const rotatingEl = document.getElementById('rotating-prompt');
 if (rotatingEl) {
   let i = 0;
+  rotatingEl.style.transition = 'opacity 0.3s ease';
   setInterval(() => {
     rotatingEl.style.opacity = '0';
     setTimeout(() => {
@@ -149,208 +181,100 @@ if (rotatingEl) {
       rotatingEl.style.opacity = '1';
     }, 300);
   }, 3000);
-  rotatingEl.style.transition = 'opacity 0.3s ease';
 }
 
 // ── FAQ Accordion ──────────────────────────────────────────────
 document.querySelectorAll('.faq-question').forEach(btn => {
   btn.addEventListener('click', () => {
-    const item = btn.closest('.faq-item');
+    const item   = btn.closest('.faq-item');
     const isOpen = item.classList.contains('open');
     document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
     if (!isOpen) item.classList.add('open');
   });
 });
 
-// ── Pro Plan Notify Button ─────────────────────────────────────
-const notifyBtn = document.getElementById('notify-btn');
-if (notifyBtn) {
-  notifyBtn.addEventListener('click', () => {
-    notifyBtn.textContent = '✓ We\'ll let you know when Pro launches!';
-    notifyBtn.disabled = true;
-    notifyBtn.style.background = 'var(--primary-faint)';
-    notifyBtn.style.color = 'var(--primary)';
-    notifyBtn.style.border = '2px solid var(--primary)';
-    notifyBtn.style.cursor = 'default';
-    notifyBtn.style.transform = 'none';
-    notifyBtn.style.boxShadow = 'none';
-    const successMsg = document.createElement('div');
-    successMsg.className = 'pricing-notify-msg';
-    successMsg.innerHTML = '<i data-lucide="check-circle" style="width:16px;height:16px;"></i><span>Thanks! We\'ll let you know when Pro launches.</span>';
-    notifyBtn.parentNode.insertBefore(successMsg, notifyBtn.nextSibling);
-    if (window.lucide) window.lucide.createIcons();
-  });
-}
+// ── Pointer-Reactive Background (spotlight + blob parallax) ───
+(function pointerReactive() {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const coarse = window.matchMedia('(pointer: coarse)').matches;
+  if (reduce || coarse) return;
 
-// ── Particle Field ─────────────────────────────────────────────
-// Canvas-rendered, spring-physics particle field with cursor repulsion.
-// No DOM elements created, targets 60fps via requestAnimationFrame.
+  const root = document.documentElement;
+  let tx = window.innerWidth / 2;
+  let ty = window.innerHeight / 2;
+  let rafId = null;
 
-(function initParticles() {
-  const canvas = document.getElementById('particle-canvas');
-  if (!canvas) return;
-
-  // Skip the particle field on mobile — it's a per-frame redraw of a full-screen
-  // grid and was part of why phones felt slow. Desktop is unchanged.
-  if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) {
-    canvas.style.display = 'none';
-    return;
+  function update() {
+    root.style.setProperty('--cursor-x', tx + 'px');
+    root.style.setProperty('--cursor-y', ty + 'px');
+    const nx = tx / window.innerWidth  - 0.5;
+    const ny = ty / window.innerHeight - 0.5;
+    root.style.setProperty('--blob-1-x', (nx * -28) + 'px');
+    root.style.setProperty('--blob-1-y', (ny * -28) + 'px');
+    root.style.setProperty('--blob-2-x', (nx *  18) + 'px');
+    root.style.setProperty('--blob-2-y', (ny *  18) + 'px');
+    rafId = null;
   }
 
-  const ctx = canvas.getContext('2d');
+  window.addEventListener('mousemove', (e) => {
+    tx = e.clientX;
+    ty = e.clientY;
+    if (!rafId) rafId = requestAnimationFrame(update);
+  }, { passive: true });
+})();
 
-  // ── Config ──────────────────────────────────────────
-  const SPACING        = 38;        // grid cell size (px)
-  const DOT_RADIUS     = 1.4;       // base dot radius (px)
-  const CURSOR_RADIUS  = 110;       // influence radius around cursor (px)
-  const REPEL_STRENGTH = 55;        // max displacement at center (px)
-  const SPRING_K       = 0.048;     // spring stiffness (0..1, lower = slower return)
-  const DAMPING        = 0.72;      // velocity damping (0..1, lower = more drag)
-
-  // Prio blue palette — subtle dots on light background
-  const PARTICLE_COLOR = 'rgba(37, 99, 235, 0.18)';
-
-  // ── State ───────────────────────────────────────────
-  let particles   = [];
-  let mouseX      = -9999;
-  let mouseY      = -9999;
-  let W           = 0;
-  let H           = 0;
-  let rafId       = null;
-
-  // ── Build particle grid ──────────────────────────────
-  function buildGrid() {
-    particles = [];
-    // Slightly offset grid so dots are never right at the edge
-    const offsetX = (W % SPACING) / 2 + SPACING / 2;
-    const offsetY = (H % SPACING) / 2 + SPACING / 2;
-    for (let gx = offsetX; gx < W; gx += SPACING) {
-      for (let gy = offsetY; gy < H; gy += SPACING) {
-        particles.push({
-          ox: gx,  // home X
-          oy: gy,  // home Y
-          x:  gx,  // current X
-          y:  gy,  // current Y
-          vx: 0,   // velocity X
-          vy: 0,   // velocity Y
-        });
+// ── Story slide reveal (replaces GSAP pin) ─────────────────────
+(function storySlides() {
+  const slides = document.querySelectorAll('.story-slide');
+  if (!slides.length) return;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      e.target.classList.toggle('is-active', e.isIntersecting);
+      // trigger calendar shimmer once on first view
+      if (e.isIntersecting) {
+        const cal = e.target.querySelector('.mini-calendar--busy');
+        if (cal && !cal.dataset.shimmered) { cal.classList.add('shimmer'); cal.dataset.shimmered = '1'; }
       }
-    }
-  }
-
-  // ── Resize handler ────────────────────────────────────
-  function resize() {
-    W = canvas.width  = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-    buildGrid();
-  }
-
-  // ── Main animation loop ───────────────────────────────
-  function tick() {
-    ctx.clearRect(0, 0, W, H);
-
-    const cr2 = CURSOR_RADIUS * CURSOR_RADIUS;
-
-    for (let i = 0; i < particles.length; i++) {
-      const p = particles[i];
-
-      // ── Cursor repulsion ──
-      const dx  = p.x - mouseX;
-      const dy  = p.y - mouseY;
-      const d2  = dx * dx + dy * dy;
-
-      if (d2 < cr2 && d2 > 0.001) {
-        const d    = Math.sqrt(d2);
-        // Smooth falloff: strongest at d=0, zero at d=CURSOR_RADIUS
-        const t    = 1 - d / CURSOR_RADIUS;
-        const soft = t * t * (3 - 2 * t); // smoothstep
-        const force = (REPEL_STRENGTH * soft) / d;
-        p.vx += dx * force;
-        p.vy += dy * force;
-      }
-
-      // ── Spring back to home ──
-      p.vx += (p.ox - p.x) * SPRING_K;
-      p.vy += (p.oy - p.y) * SPRING_K;
-
-      // ── Damping ──
-      p.vx *= DAMPING;
-      p.vy *= DAMPING;
-
-      // ── Integrate ──
-      p.x += p.vx;
-      p.y += p.vy;
-
-      // ── Draw ──
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, DOT_RADIUS, 0, Math.PI * 2);
-      ctx.fillStyle = PARTICLE_COLOR;
-      ctx.fill();
-    }
-
-    rafId = requestAnimationFrame(tick);
-  }
-
-  // ── Mouse tracking ────────────────────────────────────
-  window.addEventListener('mousemove', e => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-  });
-
-  // When cursor leaves the window, particles settle
-  window.addEventListener('mouseleave', () => {
-    mouseX = -9999;
-    mouseY = -9999;
-  });
-
-  // ── Resize ────────────────────────────────────────────
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      if (rafId) cancelAnimationFrame(rafId);
-      resize();
-      rafId = requestAnimationFrame(tick);
-    }, 150);
-  });
-
-  // ── Init ──────────────────────────────────────────────
-  resize();
-  rafId = requestAnimationFrame(tick);
+    });
+  }, { threshold: 0.25 });
+  slides.forEach(s => io.observe(s));
 })();
 
 // ── Interactive Card Tilt ──────────────────────────────────────
-// Any card tilts AWAY from the cursor (as if the mouse is pushing it),
-// giving a subtle, dynamic 3D feel. Disabled for reduced-motion + touch.
 (function cardTilt() {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const coarse = window.matchMedia('(pointer: coarse)').matches;
   if (reduce || coarse) return;
 
-  const MAX = 7; // max tilt in degrees
-  const cards = document.querySelectorAll('.feature-card, .card, .plan-feature-item, .badge-btn');
+  const cards = document.querySelectorAll(
+    '.bento-card, .feature-card, .badge-btn, ' +
+    '.story-slide, .mission-s-beat, .feature-section-grid, ' +
+    '.faq-item, .download-hero .badge-btn'
+  );
 
   cards.forEach((card) => {
+    // Larger cards get a subtler tilt so it doesn't feel jarring
+    const isLarge = card.classList.contains('feature-section-grid') ||
+                    card.classList.contains('story-slide');
+    const MAX = isLarge ? 2.5 : 6;
+
     card.style.transformStyle = 'preserve-3d';
 
     card.addEventListener('mouseenter', () => {
-      card.style.transition = 'transform 0.08s ease-out';
+      card.style.transition = 'transform 0.08s ease-out, box-shadow 220ms, border-color 220ms';
     });
-
     card.addEventListener('mousemove', (e) => {
-      const r = card.getBoundingClientRect();
-      const px = (e.clientX - r.left) / r.width - 0.5;   // -0.5 .. 0.5
-      const py = (e.clientY - r.top) / r.height - 0.5;
-      const ry = px * 2 * MAX;     // cursor on the right → right edge pushes back
-      const rx = -py * 2 * MAX;    // cursor near the bottom → bottom pushes back
+      const r  = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width  - 0.5;
+      const py = (e.clientY - r.top)  / r.height - 0.5;
+      const ry =  px * 2 * MAX;
+      const rx = -py * 2 * MAX;
       card.style.transform =
-        'perspective(800px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) +
-        'deg) translateY(-4px)';
+        'perspective(1200px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg) translateY(-3px)';
     });
-
     card.addEventListener('mouseleave', () => {
-      card.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
-      card.style.transform = '';
+      card.style.transition = 'transform 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 220ms, border-color 220ms';
+      card.style.transform  = '';
     });
   });
 })();
